@@ -1,0 +1,70 @@
+body {
+  font-family: 'Poppins', sans-serif;
+	font-size: 16px;
+	background-color: rgba(200, 245, 180, 0.4);
+	text-align: center;
+  margin: 50px;
+}
+
+h1 {
+  margin: 0px 0px 60px 0px;
+}
+
+#header {
+  border-bottom: 1px solid black;
+  padding: 0px 0px 5px 0px;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+}
+
+form {
+  margin: 0px 14px 35px 14px;
+  padding: 0px 0px 40px 0px;
+  background-color: rgba(130, 75, 75, 0.2);;
+  border: 1px solid black;
+  box-shadow: 0 12px 22px rgba(0,0,0,0.30), 0 6px 7px rgba(0,0,0,0.34);
+  width: 300px;
+  border-radius: 5px;
+}
+
+input {
+  display: block;
+  margin: 0px auto 10px auto;
+  padding: 5px 5px 5px 10px;
+  width: 190px;
+  border: 1px solid black;
+  border-radius: 3px;
+}
+
+.submit {
+  margin: 30px auto 0px auto;
+  width: 125px;
+  border-radius: 3px;
+  background-color: rgba(175, 215, 255, 0.8);
+  border: 2px solid black;
+  box-shadow: 0 3px 4px rgba(0,0,0,0.20), 0 1px 2px rgba(0,0,0,0.25);
+  cursor: pointer;
+}
+
+.submit:hover {
+  background-color: rgba(215, 255, 70, 0.8);
+}
+
+code {
+  background-color: rgba(130, 75, 75, 0.2);
+  padding: 4px 8px 4px 8px;
+  border-radius: 3px;
+}
+
+.date {
+  color: rgba(225, 80, 255, 1);
+  font-weight: bold;
+}
+
+.number {
+  color: rgba(255, 100, 100, 1);
+  font-weight: bold;
+}
