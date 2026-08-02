@@ -1,2 +1,5 @@
 node_modules
 .env
+*.vsidx
+*.sqlite
+*.sqlite-journal
