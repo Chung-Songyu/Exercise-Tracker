@@ -1,20 +1,27 @@
-// Import modules/packages/files
+//// Import modules/packages/files
 require('dotenv').config();
 const express = require('express');
 const app = express();
+
+// (Netlify deployment) - Routing
+const router = express.Router();
+
 const mongoose = require('mongoose');
 const path = require('path');
 
-// Listen is needed or Node.js will just exit silently i.e. app shut down
-const listener = app.listen(process.env.PORT, () => {
-    console.log('Your app is listening on port ' + listener.address().port);
-});
+//// Listen is needed or Node.js will just exit silently i.e. app shut down
+// (Netlify deployment) - Not required
+// const listener = app.listen(process.env.PORT, () => {
+//     console.log('Your app is listening on port ' + listener.address().port);
+// });
 
-// Serve static files
+//// Serve static files
 app.use(express.static('public'));
 
-// Routing
-app.get('/', (req, res) => {
+//// Routing
+// (Netlify deployment) - Routing
+router.get('/', (req, res) => {
+// app.get('/', (req, res) => {
     res.sendFile(__dirname + '/views/index.html');
 });
 
@@ -39,7 +46,7 @@ async function run() {
 }
 run().catch(console.error);
 
-// Define DB Schema
+//// Define DB Schema
 const userSchema = new mongoose.Schema({
     username: {
         type: String,
@@ -71,14 +78,16 @@ const userSchema = new mongoose.Schema({
     }]
 });
 
-// Create model (model name, schema, DB collection name)
+//// Create model (model name, schema, DB collection name)
 const User = mongoose.model("User", userSchema, "Users");
 
-// Parse JSON requests from endpoint
+//// Parse JSON requests from endpoint
 app.use("/api/users", express.json());
 
-// Create new user
-app.post("/api/users", async (req, res) => {
+//// Create new user
+// (Netlify deployment) - Routing
+router.post("/api/users", async (req, res) => {
+// app.post("/api/users", async (req, res) => {
     try {
         console.log("Create new user: " + req.body.username);
 
@@ -98,11 +107,13 @@ app.post("/api/users", async (req, res) => {
     }
 });
 
-// Enable indented JSON
+//// Enable indented JSON
 app.set("json spaces", 4);
 
-// Get all users
-app.get("/api/users", async (req, res) => {
+//// Get all users
+// (Netlify deployment) - Routing
+router.get("/api/users", async (req, res) => {
+// app.get("/api/users", async (req, res) => {
     try {
         console.log("Get all users");
 
@@ -117,11 +128,13 @@ app.get("/api/users", async (req, res) => {
     }
 });
 
-// Parse URL encoded requests from endpoint
-app.use("/api/users/exercises", express.urlencoded({ extended: false }));
+//// Parse URL encoded requests from endpoint
+app.use("/api/users/:_id/exercises", express.urlencoded({ extended: false }));
 
-// Add new exercise
-app.post("/api/users/:_id/exercises", async (req, res) => {
+//// Add new exercise
+// (Netlify deployment) - Routing
+router.post("/api/users/:_id/exercises", async (req, res) => {
+// app.post("/api/users/:_id/exercises", async (req, res) => {
     try {
         console.log(
             "Add new exercise:" + "\n" +
@@ -171,8 +184,10 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
     }
 });
 
-// Get logs for user
-app.get("/api/users/:_id/logs", async (req, res) => {
+//// Get logs for user
+// (Netlify deployment) - Routing
+router.get("/api/users/:_id/logs", async (req, res) => {
+// app.get("/api/users/:_id/logs", async (req, res) => {
     try {
         console.log("Get logs for user " + req.params._id);
 
@@ -264,7 +279,7 @@ app.get("/api/users/:_id/logs", async (req, res) => {
     }
 });
 
-// Error page
+//// Error page
 app.use((req, res) => {
     if (req.path.startsWith("/api")) {
         return res.status(404).json({
@@ -276,3 +291,10 @@ app.use((req, res) => {
         path.join(__dirname, "views", "error.html")
     );
 });
+
+// (Netlify deployment) - Routing
+app.use("/", router);
+
+//// (Netlify deployment) - Export the wrapped app handler
+const serverless = require('serverless-http');
+export const handler = serverless(app);
