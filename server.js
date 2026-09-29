@@ -1,111 +1,278 @@
+// Import modules/packages/files
 require('dotenv').config();
 const express = require('express');
 const app = express();
-const bodyParser = require("body-parser");
-const mongoose = require("mongoose");
-mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true});
+const mongoose = require('mongoose');
+const path = require('path');
 
-app.use(express.static('public'))
+// Listen is needed or Node.js will just exit silently i.e. app shut down
+const listener = app.listen(process.env.PORT, () => {
+    console.log('Your app is listening on port ' + listener.address().port);
+});
+
+// Serve static files
+app.use(express.static('public'));
+
+// Routing
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/views/index.html')
+    res.sendFile(__dirname + '/views/index.html');
 });
 
-app.use("/api/users", bodyParser.urlencoded({"extended": false}));
+//// Connect to database
+// Fix for Node.js bug. Refer to https://stackoverflow.com/questions/79873598
+require("node:dns/promises").setServers(["1.1.1.1", "8.8.8.8"]);
 
+// Sample code provided by MongoDB (modified)
+const clientOptions = { serverApi: { version: '1', strict: true, deprecationErrors: true } };
+async function run() {
+    try {
+        // Create a Mongoose client with a MongoClientOptions object to set the Stable API version
+        await mongoose.connect(process.env.MONGO_URI, clientOptions);
+        // Test connection by pinging "admin" database
+        await mongoose.connection.db.admin().command({ ping: 1 });
+        console.log("Pinged your deployment. You successfully connected to MongoDB!");
+
+    } finally {
+        // Ensures that the client will close when you finish/error
+        //await mongoose.disconnect();
+    }
+}
+run().catch(console.error);
+
+// Define DB Schema
 const userSchema = new mongoose.Schema({
-  username: {type: String, required: true, trim: true},
-  log: [{description: {type: String, trim: true}, duration: {type: Number, required: true}, date: {type: Date, required: true}}]
-});
-const User = mongoose.model("User", userSchema);
-
-app.post("/api/users", (req, res) => {
-  const newUserDocument = new User({
-    "username": req.body.username
-  });
-  newUserDocument.save((err, data) => {
-    console.log("user saved");
-    res.json({"username": req.body.username, "_id": data._id});
-    return data;
-  });
-});
-
-app.get("/api/users", (req, res) => {
-  const findAllUsers = User.find({}, (err, data) => {
-    res.json(data);
-  });
-});
-
-app.post("/api/users/:_id/exercises", (req, res) => {
-  const addExercise = User.findById({_id: req.params._id}, (err, data) => {
-    let newDate = null;
-    if(!req.body.date) {
-      newDate = new Date();
-    } else {
-      newDate = new Date(req.body.date);
-    };
-    data.log.push({
-      description: req.body.description,
-      duration: req.body.duration,
-      date: newDate
-    });
-    data.save((err, data) => {
-      res.json({"_id": data._id, "username": data.username, "date": newDate.toDateString(), "duration": Number(req.body.duration), "description": req.body.description});
-      console.log("exercise added");
-      return data;
-    });
-  });
+    username: {
+        type: String,
+        required: true,
+        trim: true,
+        maxlength: [50, "Username should be 50 characters or less."]
+    },
+    // Exercise log
+    log: [{
+        description: {
+            type: String,
+            default: '',
+            required: true,
+            trim: true,
+            maxlength: [200, "Description should be 200 characters or less."]
+        },
+        duration: {
+            type: Number,
+            required: true,
+            trim: true,
+            min: [1, "Duration should be 1 or more."],
+            max: [1440, "Duration should be 1440 or less."]
+        },
+        date: {
+            type: Date,
+            default: Date.now,
+            required: true
+        }
+    }]
 });
 
-app.get("/api/users/:_id/logs", (req, res) => {
-  const getLog = User.findById({_id: req.params._id}).select("-__v").exec((err, data) => {
-    const finalJson = {"_id": data._id, "username": data.username};
-    const sortedDateLog = data.log.sort((a,b) => b.date - a.date);
-    let fromLog = [];
-    let toLog = [];
+// Create model (model name, schema, DB collection name)
+const User = mongoose.model("User", userSchema, "Users");
 
-    if(req.query.from) {
-      const fromDate = new Date(req.query.from);
-      finalJson.from = fromDate.toDateString();
-      for(i=0; i<sortedDateLog.length; i++) {
-        if(sortedDateLog[i].date>=fromDate) {
-          fromLog.push(sortedDateLog[i]);
+// Parse JSON requests from endpoint
+app.use("/api/users", express.json());
+
+// Create new user
+app.post("/api/users", async (req, res) => {
+    try {
+        console.log("Create new user: " + req.body.username);
+
+        const user = await User.create({
+            username: req.body.username
+        });
+
+        console.log(
+            "Create new user successful: " + user.username + "\n" +
+            "_id: " + user._id
+        );
+        res.status(201).json(user);
+
+    } catch (err) {
+        console.log("Create new user unsuccessful: " + err.message);
+        res.status(400).json({ error: "Create new user unsuccessful" });
+    }
+});
+
+// Enable indented JSON
+app.set("json spaces", 4);
+
+// Get all users
+app.get("/api/users", async (req, res) => {
+    try {
+        console.log("Get all users");
+
+        const findAllUsers = await User.find({});
+
+        console.log("Get all users successful");
+        res.status(200).json(findAllUsers);
+
+    } catch (err) {
+        console.log("Get all users unsuccessful: " + err.message);
+        res.status(500).json({ error: "Get all users unsuccessful" });
+    }
+});
+
+// Parse URL encoded requests from endpoint
+app.use("/api/users/exercises", express.urlencoded({ extended: false }));
+
+// Add new exercise
+app.post("/api/users/:_id/exercises", async (req, res) => {
+    try {
+        console.log(
+            "Add new exercise:" + "\n" +
+            "{_id: " + req.params._id + "\n" +
+            "description: " + req.body.description + "\n" +
+            "duration: " + req.body.duration + "\n" +
+            "date: " + req.body.date + "}"
+        );
+
+        const user = await User.findById(req.params._id);
+        
+        // User not found
+        if (!user) {
+            console.log("Add new exercise unsuccessful. User not found: " + req.params._id);
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        // Set exercise date
+        let exerciseDate = null;
+        if (!req.body.date) {
+            exerciseDate = new Date();
+        } else {
+            exerciseDate = new Date(req.body.date);
         };
-      };
-    } else {
-      fromLog = [...sortedDateLog];
-    };
 
-    if(req.query.to) {
-      const toDate = new Date(req.query.to);
-      finalJson.to = toDate.toDateString();
-      for(i=0; i<fromLog.length; i++) {
-        if(fromLog[i].date<=toDate) {
-          toLog.push(fromLog[i]);
-        };
-      };
-    } else {
-      toLog = [...fromLog];
-    };
-
-    if(req.query.limit) {
-      toLog.splice(req.query.limit);
-    };
-
-    let convertedDateLog = [];
-    for(i=0; i<toLog.length; i++) {
-      let exerciseObject = {
-        description: toLog[i].description,
-        duration: toLog[i].duration,
-        date: toLog[i].date.toDateString()
-      };
-      convertedDateLog.push(exerciseObject);
-    };
-    finalJson.count = convertedDateLog.length;
-    finalJson.log = convertedDateLog;
-    res.json(finalJson);
-  });
+        user.log.push({
+            description: req.body.description,
+            duration: req.body.duration,
+            date: exerciseDate
+        });
+        
+        await user.save()
+            .then(savedUser => {
+                res.status(201).json({
+                    "_id": savedUser._id,
+                    "username": savedUser.username,
+                    "description": req.body.description,
+                    "duration": Number(req.body.duration),
+                    "date": exerciseDate.toDateString()
+                });
+                console.log("Add new exercise successful for user " + savedUser._id);
+                return;
+            })
+    } catch (err) {
+        console.log("Add new exercise unsuccessful: " + err.message);
+        res.status(400).json({ error: "Add new exercise unsuccessful" });
+    }
 });
 
-const listener = app.listen(process.env.PORT || 3000, () => {
-  console.log('Your app is listening on port ' + listener.address().port)
-})
+// Get logs for user
+app.get("/api/users/:_id/logs", async (req, res) => {
+    try {
+        console.log("Get logs for user " + req.params._id);
+
+        // Check valid "from" date
+        if (req.query.from && new Date(req.query.from) =="Invalid Date") {
+            return res.status(400).json({ error: "Invalid from date" });
+        }
+
+        // Check valid "to" date
+        if (req.query.to && new Date(req.query.to) == "Invalid Date") {
+            return res.status(400).json({ error: "Invalid to date" });
+        }
+
+        // Check valid limit
+        const regexNum = /^[0-9]+$/;
+        if (req.query.limit && !regexNum.test(req.query.limit)) {
+            return res.status(400).json({ error: "Invalid limit" });
+        }
+
+        // Exclude __v field in response
+        const user = await User.findById(req.params._id).select("-__v");
+
+        // User not found
+        if (!user) {
+            console.log("Get logs for user unsuccessful. User not found: " + req.params._id);
+            return res.status(404).json({ error: "User not found" });
+        }
+        
+        const finalJson = {
+            "_id": user._id,
+            "username": user.username
+        };
+
+        // Sort retrieved logs from latest to earliest
+        const sortedDateLog = user.log.sort((a, b) => b.date - a.date);
+        let fromLog = [];
+        let toLog = [];
+        
+        // Exclude logs that are earlier than "from" date
+        if (req.query.from) {
+            const fromDate = new Date(req.query.from);
+            finalJson.from = fromDate.toDateString();
+            for (i = 0; i < sortedDateLog.length; i++) {
+                if (sortedDateLog[i].date >= fromDate) {
+                    fromLog.push(sortedDateLog[i]);
+                };
+            };
+        } else {
+            fromLog = [...sortedDateLog];
+        };
+
+        // Exclude logs that are later than "to" date
+        if (req.query.to) {
+            const toDate = new Date(req.query.to);
+            finalJson.to = toDate.toDateString();
+            for (i = 0; i < fromLog.length; i++) {
+                if (fromLog[i].date <= toDate) {
+                    toLog.push(fromLog[i]);
+                };
+            };
+        } else {
+            toLog = [...fromLog];
+        };
+        
+        // Reduce number of logs returned to the "limit"
+        if (req.query.limit) {
+            toLog.splice(req.query.limit);
+        };
+
+        // Format JSON response
+        let requestedLogs = [];
+        for (i = 0; i < toLog.length; i++) {
+            let exerciseObject = {
+                description: toLog[i].description,
+                duration: toLog[i].duration,
+                date: toLog[i].date.toDateString()
+            };
+            requestedLogs.push(exerciseObject);
+        };
+        finalJson.count = requestedLogs.length;
+        finalJson.log = requestedLogs;
+
+        console.log("Get logs for user " + req.params._id + "successful");
+        res.status(200).json(finalJson);
+
+    } catch (err) {
+        console.log("Get logs for user " + req.params._id + "unsuccessful: " + err.message);
+        res.status(500).json({ error: "Get logs for user unsuccessful" });
+    }
+});
+
+// Error page
+app.use((req, res) => {
+    if (req.path.startsWith("/api")) {
+        return res.status(404).json({
+            error: "Page not found"
+        });
+    }
+
+    res.status(404).sendFile(
+        path.join(__dirname, "views", "error.html")
+    );
+});
