@@ -22,7 +22,7 @@ app.use(express.static('public'));
 // (Netlify deployment) - Routing
 router.get('/', (req, res) => {
 // app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html');
+    res.sendFile(path.join(__dirname, "../../public/index.html"));
 });
 
 //// Connect to database
@@ -288,7 +288,7 @@ app.use((req, res) => {
     }
 
     res.status(404).sendFile(
-        path.join(__dirname, "error.html")
+        path.join(__dirname, "../../public/error.html"));
     );
 });
 
