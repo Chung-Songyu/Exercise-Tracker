@@ -81,6 +81,9 @@ const userSchema = new mongoose.Schema({
 //// Create model (model name, schema, DB collection name)
 const User = mongoose.model("User", userSchema, "Users");
 
+// (Netlify deployment) - Routing
+app.use("/", router);
+
 //// Parse JSON requests from endpoint
 app.use("/api/users", express.json());
 
@@ -289,9 +292,6 @@ app.use((req, res) => {
 
     res.status(404).sendFile(path.join(__dirname, "../../public/error.html"));
 });
-
-// (Netlify deployment) - Routing
-app.use("/server/", router);
 
 //// (Netlify deployment) - Export the wrapped app handler
 const serverless = require('serverless-http');
