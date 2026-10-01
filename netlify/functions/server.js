@@ -81,11 +81,9 @@ const userSchema = new mongoose.Schema({
 //// Create model (model name, schema, DB collection name)
 const User = mongoose.model("User", userSchema, "Users");
 
-// (Netlify deployment) - Routing
-app.use("/", router);
-
 //// Parse JSON requests from endpoint
-app.use("/api/users", express.json());
+// (Netlify deployment) - Routing
+app.use("/api/users", express.json(), router);
 
 //// Create new user
 // (Netlify deployment) - Routing
