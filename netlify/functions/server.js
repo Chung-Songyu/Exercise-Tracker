@@ -25,7 +25,6 @@ router.get('/server', (req, res) => {
     res.sendFile(path.join(__dirname, "../../public/index.html"));
 });
 
-/*
 //// Connect to database
 // Fix for Node.js bug. Refer to https://stackoverflow.com/questions/79873598
 require("node:dns/promises").setServers(["1.1.1.1", "8.8.8.8"]);
@@ -288,11 +287,8 @@ app.use((req, res) => {
         });
     }
 
-    res.status(404).sendFile(
-        path.join(__dirname, "../../public/error.html"));
-    );
+    res.status(404).sendFile(path.join(__dirname, "../../public/error.html"));
 });
-*/
 
 // (Netlify deployment) - Routing
 app.use("/", router);
