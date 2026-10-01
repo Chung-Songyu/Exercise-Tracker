@@ -291,7 +291,7 @@ app.use((req, res) => {
 });
 
 // (Netlify deployment) - Routing
-app.use("/", router);
+app.use("/server/", router);
 
 //// (Netlify deployment) - Export the wrapped app handler
 const serverless = require('serverless-http');
