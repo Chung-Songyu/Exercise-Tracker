@@ -26,7 +26,7 @@ router.get('/', (req, res) => {
 });
 
 //// Netlify test
-app.use("/", router);
+app.use("/server", router);
 router.get("/hello", (req, res) => res.send("Hello World!"));
 
 //// Connect to database
@@ -286,7 +286,7 @@ router.get("/api/users/:_id/logs", async (req, res) => {
 });
 
 //// Error page
-app.use((req, res) => {
+/*app.use((req, res) => {
     if (req.path.startsWith("/api")) {
         return res.status(404).json({
             error: "Page not found"
@@ -294,7 +294,7 @@ app.use((req, res) => {
     }
 
     res.status(404).sendFile(path.join(__dirname, "../../public/error.html"));
-});
+});*/
 
 //// (Netlify deployment) - Export the wrapped app handler
 const serverless = require('serverless-http');
