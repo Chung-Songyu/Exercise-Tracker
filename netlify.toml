@@ -5,9 +5,15 @@
   node_bundler = "esbuild"
 [[redirects]]
   force = true
-  from = "/*"
+  from = "/"
   status = 200
-  to = "/.netlify/functions/server/:splat"
+  to = "/.netlify/functions/server/"
+
+[[redirects]]
+  force = true
+  from = "/hello"
+  status = 200
+  to = "/.netlify/functions/server/hello"
 
 # Error: ENOENT: no such file or directory, stat '/var/task/public/index.html'
 
