@@ -26,9 +26,16 @@ router.get('/', (req, res) => {
 });
 
 //// Netlify test
-app.use("/server", router);
+app.use("/", router);
 router.get("/hello", (req, res) => res.send("Hello World!"));
 
+//// Netlify working config
+/*
+app.use("/server", router);
+router.get("/hello", (req, res) => res.send("Hello World!"));
+*/
+
+/*
 //// Connect to database
 // Fix for Node.js bug. Refer to https://stackoverflow.com/questions/79873598
 require("node:dns/promises").setServers(["1.1.1.1", "8.8.8.8"]);
@@ -286,7 +293,7 @@ router.get("/api/users/:_id/logs", async (req, res) => {
 });
 
 //// Error page
-/*app.use((req, res) => {
+app.use((req, res) => {
     if (req.path.startsWith("/api")) {
         return res.status(404).json({
             error: "Page not found"
