@@ -20,13 +20,14 @@ app.use(express.static('public'));
 
 //// Routing
 // (Netlify deployment) - Routing
-app.get('/', (req, res) => {
+//app.get('/', (req, res) => {
 // app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, "../../public/index.html"));
-});
+//    res.sendFile(path.join(__dirname, "../../public/index.html"));
+//});
 
 //// Netlify test
-app.get("/hello", (req, res) => res.send("Hello World!"));
+app.use("/", router);
+router.get("/hello", (req, res) => res.send("Hello World!"));
 
 //// Netlify working config
 /*
