@@ -1,6 +1,6 @@
 # This file is used for deployment to Netlify
 # https://docs.netlify.com/build/frameworks/framework-setup-guides/express/
-[functions]
+[build]
   functions = "netlify/functions"
 [[redirects]]
   force = true
