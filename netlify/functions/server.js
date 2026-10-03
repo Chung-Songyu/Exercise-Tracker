@@ -26,8 +26,8 @@ router.get('/', (req, res) => {
 });
 
 //// Netlify test
+app.use("/", router);
 router.get("/hello", (req, res) => res.send("Hello World!"));
-app.use("/server/", router);
 
 //// Connect to database
 // Fix for Node.js bug. Refer to https://stackoverflow.com/questions/79873598
@@ -87,7 +87,7 @@ const User = mongoose.model("User", userSchema, "Users");
 
 //// Parse JSON requests from endpoint
 // (Netlify deployment) - Routing
-app.use("/api/users", express.json(), router);
+app.use("/api/users", express.json());
 //app.use("/api/users", express.json());
 
 //// Create new user
