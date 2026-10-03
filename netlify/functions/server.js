@@ -20,10 +20,14 @@ app.use(express.static('public'));
 
 //// Routing
 // (Netlify deployment) - Routing
-router.get('/server', (req, res) => {
+router.get('/', (req, res) => {
 // app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, "../../public/index.html"));
 });
+
+//// Netlify test
+router.get("/hello", (req, res) => res.send("Hello World!"));
+app.use("/api/", router);
 
 //// Connect to database
 // Fix for Node.js bug. Refer to https://stackoverflow.com/questions/79873598
@@ -84,6 +88,7 @@ const User = mongoose.model("User", userSchema, "Users");
 //// Parse JSON requests from endpoint
 // (Netlify deployment) - Routing
 app.use("/api/users", express.json(), router);
+//app.use("/api/users", express.json());
 
 //// Create new user
 // (Netlify deployment) - Routing
