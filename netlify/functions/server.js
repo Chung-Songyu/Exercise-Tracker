@@ -27,7 +27,7 @@ router.get('/', (req, res) => {
 
 //// Netlify test
 router.get("/hello", (req, res) => res.send("Hello World!"));
-app.use("/api/", router);
+app.use("/server/", router);
 
 //// Connect to database
 // Fix for Node.js bug. Refer to https://stackoverflow.com/questions/79873598
