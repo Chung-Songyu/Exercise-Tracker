@@ -22,7 +22,7 @@ app.use(express.static('public'));
 // (Netlify deployment) - Routing
 app.get('/', (req, res) => {
 // app.get('/', (req, res) => {
-    res.send("Index!");
+    //res.send("Index!");
     //res.sendFile(path.join(__dirname, "../../public/index.html"));
 });
 
