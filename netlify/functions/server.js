@@ -26,8 +26,7 @@ router.get('/', (req, res) => {
 });
 
 //// Netlify test
-app.use("/", router);
-router.get("/hello", (req, res) => res.send("Hello World!"));
+app.get("/hello", (req, res) => res.send("Hello World!"));
 
 //// Netlify working config
 /*
