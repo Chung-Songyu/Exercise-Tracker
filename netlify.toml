@@ -1,10 +1,11 @@
 # This file is used for deployment to Netlify
 # https://docs.netlify.com/build/frameworks/framework-setup-guides/express/
-[build]
-  functions = "netlify/functions"
+[functions]
+  external_node_modules = ["express"]
+  node_bundler = "esbuild"
 [[redirects]]
   force = true
-  from = "/*"
+  from = "/server/*"
   status = 200
   to = "/.netlify/functions/server/:splat"
 

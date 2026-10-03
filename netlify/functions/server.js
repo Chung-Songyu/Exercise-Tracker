@@ -20,7 +20,7 @@ app.use(express.static('public'));
 
 //// Routing
 // (Netlify deployment) - Routing
-router.get('/', (req, res) => {
+app.get('/', (req, res) => {
 // app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, "../../public/index.html"));
 });
