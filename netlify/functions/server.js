@@ -22,7 +22,7 @@ app.use(express.static('public'));
 // (Netlify deployment) - Routing
 router.get('/', (req, res) => {
 // app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, "../../public/index.html"));
+    res.sendFile(path.join(__dirname, "../../../../public/index.html"));
 });
 
 //// Netlify test
@@ -293,7 +293,7 @@ app.use((req, res) => {
         });
     }
 
-    res.status(404).sendFile(path.join(__dirname, "../../public/error.html"));
+    res.status(404).sendFile(path.join(__dirname, "../../../../public/error.html"));
 });
 
 //// (Netlify deployment) - Export the wrapped app handler
