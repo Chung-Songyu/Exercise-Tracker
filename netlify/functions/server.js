@@ -4,7 +4,7 @@ const express = require('express');
 const app = express();
 
 // (Netlify deployment) - Routing
-const router = express.Router();
+//const router = express.Router();
 
 const mongoose = require('mongoose');
 const path = require('path');
@@ -19,24 +19,14 @@ const path = require('path');
 app.use(express.static('public'));
 
 //// Routing
-// (Netlify deployment) - Routing
-//app.get('/', (req, res) => {
+// (Netlify deployment) - Not required
 // app.get('/', (req, res) => {
-    //res.send("Index!");
-    //res.sendFile(path.join(__dirname, "../../public/index.html"));
-//});
+//    res.sendFile(path.join(__dirname, "../../public/index.html"));
+// });
 
-//// Netlify test
-//app.use("/", router);
+//// Netlify testing
 app.get("/hello", (req, res) => res.send("Hello World!"));
 
-//// Netlify working config
-/*
-app.use("/server", router);
-router.get("/hello", (req, res) => res.send("Hello World!"));
-*/
-
-/*
 //// Connect to database
 // Fix for Node.js bug. Refer to https://stackoverflow.com/questions/79873598
 require("node:dns/promises").setServers(["1.1.1.1", "8.8.8.8"]);
@@ -94,14 +84,10 @@ const userSchema = new mongoose.Schema({
 const User = mongoose.model("User", userSchema, "Users");
 
 //// Parse JSON requests from endpoint
-// (Netlify deployment) - Routing
 app.use("/api/users", express.json());
-//app.use("/api/users", express.json());
 
 //// Create new user
-// (Netlify deployment) - Routing
-router.post("/api/users", async (req, res) => {
-// app.post("/api/users", async (req, res) => {
+app.post("/api/users", async (req, res) => {
     try {
         console.log("Create new user: " + req.body.username);
 
@@ -125,9 +111,7 @@ router.post("/api/users", async (req, res) => {
 app.set("json spaces", 4);
 
 //// Get all users
-// (Netlify deployment) - Routing
-router.get("/api/users", async (req, res) => {
-// app.get("/api/users", async (req, res) => {
+app.get("/api/users", async (req, res) => {
     try {
         console.log("Get all users");
 
@@ -146,9 +130,7 @@ router.get("/api/users", async (req, res) => {
 app.use("/api/users/:_id/exercises", express.urlencoded({ extended: false }));
 
 //// Add new exercise
-// (Netlify deployment) - Routing
-router.post("/api/users/:_id/exercises", async (req, res) => {
-// app.post("/api/users/:_id/exercises", async (req, res) => {
+app.post("/api/users/:_id/exercises", async (req, res) => {
     try {
         console.log(
             "Add new exercise:" + "\n" +
@@ -199,9 +181,7 @@ router.post("/api/users/:_id/exercises", async (req, res) => {
 });
 
 //// Get logs for user
-// (Netlify deployment) - Routing
-router.get("/api/users/:_id/logs", async (req, res) => {
-// app.get("/api/users/:_id/logs", async (req, res) => {
+app.get("/api/users/:_id/logs", async (req, res) => {
     try {
         console.log("Get logs for user " + req.params._id);
 
@@ -294,7 +274,7 @@ router.get("/api/users/:_id/logs", async (req, res) => {
 });
 
 //// Error page
-app.use((req, res) => {
+/*app.use((req, res) => {
     if (req.path.startsWith("/api")) {
         return res.status(404).json({
             error: "Page not found"

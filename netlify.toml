@@ -3,14 +3,16 @@
 [functions]
   external_node_modules = ["express"]
   node_bundler = "esbuild"
-#[[redirects]]
-#  force = true
-#  from = "/"
-#  status = 200
-#  to = "/.netlify/functions/server/"
 
+# Netlify testing
 [[redirects]]
   force = true
   from = "/hello"
   status = 200
   to = "/.netlify/functions/server/hello"
+
+[[redirects]]
+  force = true
+  from = "/api/users/*"
+  status = 200
+  to = "/.netlify/functions/server/api/users/:splat"
