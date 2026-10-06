@@ -1,70 +1,150 @@
+/* General */
 body {
-  font-family: 'Poppins', sans-serif;
-	font-size: 16px;
-	background-color: rgba(200, 245, 180, 0.4);
-	text-align: center;
-  margin: 50px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    background-color: rgba(200, 245, 180, 0.4);
+    text-align: center;
+    margin: 50px;
 }
 
 h1 {
-  margin: 0px 0px 60px 0px;
+    margin: 0px 0px 60px 0px;
 }
 
 #header {
-  border-bottom: 1px solid black;
-  padding: 0px 0px 5px 0px;
+    border-bottom: 1px solid black;
+    padding: 0px 0px 5px 0px;
 }
 
+/* Form */
 .container {
-  display: flex;
-  justify-content: center;
+    display: flex;
+    justify-content: center;
 }
 
 form {
-  margin: 0px 14px 35px 14px;
-  padding: 0px 0px 40px 0px;
-  background-color: rgba(130, 75, 75, 0.2);;
-  border: 1px solid black;
-  box-shadow: 0 12px 22px rgba(0,0,0,0.30), 0 6px 7px rgba(0,0,0,0.34);
-  width: 300px;
-  border-radius: 5px;
+    margin: 0px 14px 35px 14px;
+    padding: 0px 0px 40px 0px;
+    background-color: rgba(130, 75, 75, 0.2);
+    border: 1px solid black;
+    box-shadow: 0 12px 22px rgba(0,0,0,0.30), 0 6px 7px rgba(0,0,0,0.34);
+    width: 300px;
+    border-radius: 5px;
+}
+
+label {
+    font-size: 14px;
+    display: block;
+    margin: 0px auto 0px auto;
+    padding: 0px 15px 5px 0px;
+    width: 190px;
+    text-align: left;
 }
 
 input {
-  display: block;
-  margin: 0px auto 10px auto;
-  padding: 5px 5px 5px 10px;
-  width: 190px;
-  border: 1px solid black;
-  border-radius: 3px;
+    display: block;
+    margin: 0px auto 10px auto;
+    padding: 5px 5px 5px 10px;
+    width: 190px;
+    border: 1px solid black;
+    border-radius: 3px;
 }
 
 .submit {
-  margin: 30px auto 0px auto;
-  width: 125px;
-  border-radius: 3px;
-  background-color: rgba(175, 215, 255, 0.8);
-  border: 2px solid black;
-  box-shadow: 0 3px 4px rgba(0,0,0,0.20), 0 1px 2px rgba(0,0,0,0.25);
-  cursor: pointer;
+    margin: 30px auto 0px auto;
+    width: 125px;
+    background-color: rgba(175, 215, 255, 0.8);
+    border: 2px solid black;
+    border-radius: 3px;
+    box-shadow: 0 3px 4px rgba(0,0,0,0.20), 0 1px 2px rgba(0,0,0,0.25);
+    cursor: pointer;
 }
 
-.submit:hover {
-  background-color: rgba(215, 255, 70, 0.8);
+    .submit:hover {
+        background-color: rgba(215, 255, 70, 0.8);
+    }
+
+/* Form Error Message */
+.error {
+    margin: -5px auto 0px auto;
+    padding: 0px 15px 0px 0px;
+    width: 190px;
+    text-align: left;
+    color: red;
+    font-size: 14px;
 }
 
+/* Page Overlay */
+#pageOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(255, 255, 255, 0.75);
+    cursor: not-allowed;
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Success Message Modal */
+#modal {
+    background: white;
+    border: 5px solid green;
+    border-radius: 3px;
+}
+
+#modalMessage {
+    padding: 5px 10px 5px 10px;
+}
+
+    #modalMessage p {
+        margin: 5px 0px 5px 0px;
+    }
+
+#copyUser, #copyID, .required {
+    color: red;
+}
+
+#copyPrompt {
+    color: blue;
+}
+
+    #copyPrompt:hover {
+        cursor: pointer;
+    }
+
+#modalButtons {
+    border-top: 1px solid black;
+    background: rgba(0, 0, 0, 0.75);
+    padding: 5px;
+}
+
+#modalOK {
+    min-width: 75px;
+}
+
+    #modalOK:hover {
+        cursor: pointer;
+    }
+
+/* Footnotes */
 code {
-  background-color: rgba(130, 75, 75, 0.2);
-  padding: 4px 8px 4px 8px;
-  border-radius: 3px;
+    background-color: rgba(130, 75, 75, 0.2);
+    padding: 4px 8px 4px 8px;
+    border-radius: 3px;
 }
 
-.date {
-  color: rgba(225, 80, 255, 1);
-  font-weight: bold;
+.footnote-id {
+    color: blue;
+    font-weight: bold;
 }
 
-.number {
-  color: rgba(255, 100, 100, 1);
-  font-weight: bold;
+.footnote-date {
+    color: rgba(225, 80, 255, 1);
+    font-weight: bold;
+}
+
+.footnote-number {
+    color: rgba(255, 100, 100, 1);
+    font-weight: bold;
 }

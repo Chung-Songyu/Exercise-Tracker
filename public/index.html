@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Exercise Tracker Microservice</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Downloaded full SVG from Font Awesome as favicon -->
+    <link rel="icon" type="image/svg+xml" href="/dumbbell-solid-full.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins&display=swap">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <h1><span id="header">Exercise Tracker Microservice</span></h1>
+    <div class="container">
+        <!-- Create New User -->
+        <form id="user-form" method="post">
+            <h3>Create New User</h3>
+
+            <label>Username <span class="required">*</span></label>
+            <input id="username" type="text" name="username" placeholder="E.g. John Doe" maxlength="50" required>
+            <p id="error-username" class="error" hidden></p>
+
+            <input type="submit" class="submit" value="Submit">
+        </form>
+
+        <!-- Add Exercise -->
+        <form id="exercise-form" method="post">
+            <h3>Add Exercise</h3>
+
+            <label>_id <span class="required">*</span></label>
+            <input type="text" id="userId" name=":_id" placeholder="E.g. 5fb5853f734231456ccb3b05" required>
+            <p id="error-userid" class="error" hidden></p>
+
+            <label>Description <span class="required">*</span></label>
+            <input type="text" id="description" name="description" placeholder="E.g. Running" maxlength="200" required>
+            <p id="error-description" class="error" hidden></p>
+
+            <label>Duration (minutes) <span class="required">*</span></label>
+            <input type="number" id="duration" name="duration" placeholder="E.g. 60" min="1" max="1440" required>
+            <p id="error-duration" class="error" hidden></p>
+
+            <label>Date</label>
+            <input type="date" id="date" name="date">
+            <p id="error-date" class="error" hidden></p>
+
+            <input type="submit" class="submit" value="Submit">
+        </form>
+    </div>
+    
+    <!-- Footnotes -->
+    <p>
+        <strong>Access your exercise log at:</strong>
+        <br /><br />
+        <code>https://csy-exercise-tracker.netlify.app/api/users/{<span class="footnote-id">_id</span>}/logs?[&from=<span class="footnote-date">Date</span>][&to=<span class="footnote-date">Date</span>][&limit=<span class="footnote-number">Number</span>]</code>
+    </p>
+    <p><strong>[ ]</strong> = optional query parameter</p>
+    <p><span class="footnote-date">Date</span> in yyyy-mm-dd format. E.g. 2020-12-31.</p>
+
+    <!-- Success Message Modal -->
+    <div id="pageOverlay">
+        <div id="modal">
+            <div id="modalMessage"></div>
+            <!--<div id="modalMessage">
+                <p><span id='copyUser'><b>Joe</b></span> created successfully.</p>
+                <p>User _id is <span id='copyID'><b>1234567</b></span>. (<span id='copyPrompt'>Copy</span>)</p>
+                <p>Please copy down the _id as it is needed to add a new exercise or view the exercise log.</p>
+            </div>-->
+            <div id="modalButtons">
+                <button id="modalOK">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script -->
+    <script src="main.js"></script>
+
+</body>
+</html>

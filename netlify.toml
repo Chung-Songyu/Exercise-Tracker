@@ -1,0 +1,19 @@
+# (Netlify deployment) This file is used solely for deployment to Netlify
+# https://docs.netlify.com/build/frameworks/framework-setup-guides/express/
+
+[functions]
+  external_node_modules = ["express"]
+  node_bundler = "esbuild"
+
+# All url endpoints ending in "/api/users/*" are redirected to the respective "/api/users/:splat" routing in "/netlify/functions/server.js"
+[[redirects]]
+  force = true
+  from = "/api/users/*"
+  status = 200
+  to = "/.netlify/functions/server/api/users/:splat"
+
+# Catch-all for invalid url endpoints - Error page
+[[redirects]]
+  from = "/*"
+  status = 404
+  to = "/error.html"
